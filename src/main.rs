@@ -79,7 +79,7 @@ fn main() {
                     Arg::with_name("length")
                         .short("l")
                         .long("length")
-                        .help("Length of strings")
+                        .help("Minimum length of strings")
                         .takes_value(true)
                         .value_name("LENGTH")
                         .default_value("1024")
@@ -146,7 +146,7 @@ fn main() {
 
     let coll = match matches.subcommand() {
         ("overflow", Some(submatches)) => {
-            let len = submatches.value_of("length").unwrap().parse().unwrap();
+            let len = submatches.value_of("length").unwrap().parse::<usize>().unwrap().next_power_of_two();
             overflow_attack::find_collision(len)
         }
         ("birthday", Some(submatches)) => {
