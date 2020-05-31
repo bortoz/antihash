@@ -203,3 +203,125 @@ fn main() {
         println!("Collision not found");
     }
 }
+
+#[test]
+fn overflow_attack() {
+    let (s1, s2) = overflow_attack::find_collision(1024).expect("collision not found");
+    let (mut h1, mut h2) = (0u64, 0u64);
+    let base = 9973;
+    for c1 in s1.chars() {
+        h1 = h1.wrapping_mul(base).wrapping_add(c1 as u64);
+    }
+    for c2 in s2.chars() {
+        h2 = h2.wrapping_mul(base).wrapping_add(c2 as u64);
+    }
+    assert!(h1 == h2, "hashes are different");
+}
+
+#[test]
+fn birthday_attack() {
+    let base = 9973;
+    let module = 1000000007;
+    let alphabet = (0..26)
+        .map(|i| std::char::from_u32(i + 97).unwrap().to_string())
+        .collect();
+    let (s1, s2) = birthday_attack::find_collision(vec![base], vec![module], alphabet).expect("collision not found");
+    let (mut h1, mut h2) = (0u64, 0u64);
+    for c1 in s1.chars() {
+        h1 = (h1 * base + c1 as u64) % module;
+    }
+    for c2 in s2.chars() {
+        h2 = (h2 * base + c2 as u64) % module;
+    }
+    assert!(h1 == h2, "hashes are different");
+}
+
+#[test]
+fn birthday_attack_multiple() {
+    let bases = vec![9973, 11173];
+    let modules = vec![1000000007, 1000000009];
+    let alphabet = (0..26)
+        .map(|i| std::char::from_u32(i + 97).unwrap().to_string())
+        .collect();
+    let (s1, s2) = birthday_attack::find_collision(bases.clone(), modules.clone(), alphabet).expect("collision not found");
+    for (&b, &m) in bases.iter().zip(modules.iter()) {
+        let (mut h1, mut h2) = (0u64, 0u64);
+        for c1 in s1.chars() {
+            h1 = (h1 * b + c1 as u64) % m;
+        }
+        for c2 in s2.chars() {
+            h2 = (h2 * b + c2 as u64) % m;
+        }
+        assert!(h1 == h2, "hashes are different");
+    }
+}
+
+#[test]
+fn birthday_attack_alphabet() {
+    let base = 9973;
+    let module = 1000000007;
+    let alphabet = vec!["xcphdx".to_string(), "fsngso".to_string()];
+    let (s1, s2) = birthday_attack::find_collision(vec![base], vec![module], alphabet).expect("collision not found");
+    let (mut h1, mut h2) = (0u64, 0u64);
+    for c1 in s1.chars() {
+        h1 = (h1 * base + c1 as u64) % module;
+    }
+    for c2 in s2.chars() {
+        h2 = (h2 * base + c2 as u64) % module;
+    }
+    assert!(h1 == h2, "hashes are different");
+}
+
+#[test]
+fn tree_attack() {
+    let base = 9973;
+    let module = 1000000007;
+    let alphabet = (0..26)
+        .map(|i| std::char::from_u32(i + 97).unwrap().to_string())
+        .collect();
+    let (s1, s2) = tree_attack::find_collision(vec![base], vec![module], 100000, alphabet).expect("collision not found");
+    let (mut h1, mut h2) = (0u64, 0u64);
+    for c1 in s1.chars() {
+        h1 = (h1 * base + c1 as u64) % module;
+    }
+    for c2 in s2.chars() {
+        h2 = (h2 * base + c2 as u64) % module;
+    }
+    assert!(h1 == h2, "hashes are different");
+}
+
+#[test]
+fn tree_attack_multiple() {
+    let bases = vec![9973, 11173];
+    let modules = vec![1000000007, 1000000009];
+    let alphabet = (0..26)
+        .map(|i| std::char::from_u32(i + 97).unwrap().to_string())
+        .collect();
+    let (s1, s2) = tree_attack::find_collision(bases.clone(), modules.clone(), 100000, alphabet).expect("collision not found");
+    for (&b, &m) in bases.iter().zip(modules.iter()) {
+        let (mut h1, mut h2) = (0u64, 0u64);
+        for c1 in s1.chars() {
+            h1 = (h1 * b + c1 as u64) % m;
+        }
+        for c2 in s2.chars() {
+            h2 = (h2 * b + c2 as u64) % m;
+        }
+        assert!(h1 == h2, "hashes are different");
+    }
+}
+
+#[test]
+fn tree_attack_alphabet() {
+    let base = 9973;
+    let module = 1000000007;
+    let alphabet = vec!["xcphdx".to_string(), "fsngso".to_string()];
+    let (s1, s2) = tree_attack::find_collision(vec![base], vec![module], 100000, alphabet).expect("collision not found");
+    let (mut h1, mut h2) = (0u64, 0u64);
+    for c1 in s1.chars() {
+        h1 = (h1 * base + c1 as u64) % module;
+    }
+    for c2 in s2.chars() {
+        h2 = (h2 * base + c2 as u64) % module;
+    }
+    assert!(h1 == h2, "hashes are different");
+}
