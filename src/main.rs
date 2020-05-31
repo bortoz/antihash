@@ -9,7 +9,6 @@ mod birthday_attack;
 mod overflow_attack;
 mod tree_attack;
 
-#[derive(Clone)]
 struct WordValidator {
     len: Cell<Option<usize>>,
 }

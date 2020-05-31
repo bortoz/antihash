@@ -259,7 +259,7 @@ impl<'a> TreeAttack<'a> {
     }
 }
 
-pub fn find_single_collision(
+fn find_single_collision(
     base: u64, module: u64, cluster_size: usize, alphabet: &Vec<String>,
 ) -> Option<(String, String)> {
     let mut attack = TreeAttack::new(base, module, cluster_size, alphabet);
