@@ -1,7 +1,6 @@
 use binary_heap_plus::{BinaryHeap, MinComparator};
 use rand::Rng;
 use std::collections::{HashSet, VecDeque};
-use std::cmp::PartialEq;
 
 #[derive(Clone)]
 struct TreeAttackInternalNode {
@@ -65,12 +64,6 @@ impl<'a> TreeAttackNode<'a> {
     }
 }
 
-impl<'a> PartialEq for TreeAttackNode<'a> {
-    fn eq(&self, other: &Self) -> bool {
-        self.get_sum().eq(&other.get_sum())
-    }
-}
-
 struct TreeAttack<'a> {
     alphabet: &'a Vec<String>,
     word_len: usize,
@@ -118,7 +111,7 @@ impl<'a> TreeAttack<'a> {
                 }
             }
             self.tree[i + len].sort_unstable_by_key(|k| k.get_sum());
-            self.tree[i + len].dedup();
+            self.tree[i + len].dedup_by_key(|k| k.get_sum());
             for _ in 0..self.word_len {
                 pot = pot * self.base % self.module;
             }
